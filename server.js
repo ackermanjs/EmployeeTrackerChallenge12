@@ -38,7 +38,11 @@ startPrompt = () => {
         "View Employees",
         "View Departments",
         "View Roles",
+        "Create an Employee",
+        "Create a Role",
+        "Create a Department",
         "Exit the Application",
+
       ],
     })
     .then(function (result) {
@@ -52,6 +56,15 @@ startPrompt = () => {
         case "View Roles":
           accessRoles();
           break;
+        // case "Create an Employee":
+        //   createEmployee();
+        //   break;
+        // case "Create a Department":
+        //   createDepartment();
+        //   break;
+        // case "Create a Role":
+        //   createRole();
+        //   break;
         default:
           exitPrompt();
       }
@@ -103,3 +116,15 @@ const exitPrompt = () => {
   connectDB.end();
   process.exit();
 };
+
+
+// const createEmployee = () => {
+
+  
+// }
+// const createDepartment = () => {
+
+// }
+// const createRole = () => {
+
+// }
