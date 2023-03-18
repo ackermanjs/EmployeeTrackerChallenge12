@@ -29,7 +29,8 @@ connectDB.connect((err) => {
 });
 
 startPrompt = () => {
-  inquirer.prompt({
+  inquirer
+    .prompt({
       name: "mainMenu",
       type: "list",
       message: "How would you like to proceed?",
@@ -41,7 +42,7 @@ startPrompt = () => {
       ],
     })
     .then(function (result) {
-      switch (result.option) {
+      switch (result.mainMenu) {
         case "View Employees":
           accessEmployees();
           break;
@@ -58,7 +59,7 @@ startPrompt = () => {
 };
 
 const accessDepartments = () => {
-  connectDB.query(`SELECT * FROM departments;`, (err, data) =>{
+  connectDB.query(`SELECT * FROM department;`, (err, data) => {
     if (err) throw err;
     console.log(data);
     console.table(data);
@@ -67,37 +68,38 @@ const accessDepartments = () => {
 };
 
 const accessRoles = () => {
-  connectDB.query(`SELECT roles.role_id, roles.title, departments.name AS department, roles.salary 
-  FROM roles 
-  INNER JOIN departments 
-  ON roles.dept_id = departments.dept_id;`, 
-  (err, data) => {
+  connectDB.query(
+    `SELECT role.role_id, roles.title, department.name AS department, role.salary 
+  FROM role 
+  INNER JOIN department 
+  ON role.dept_id = department.dept_id;`,
+    (err, data) => {
+      if (err) throw err;
+      console.table(data);
+      startPrompt();
+    }
+  );
+};
+
+const accessEmployees = () => {
+  const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department_name, CONCAT(managers.first_name, " ", managers.last_name) AS manager
+  FROM employee
+  INNER JOIN role
+  ON role.id = employee.role_id
+  INNER JOIN department
+  ON role.department_id = department.id
+  LEFT JOIN employee AS managers
+  ON employee.manager_id = managers.id
+  ;`;
+
+  connectDB.query(sql, (err, data) => {
     if (err) throw err;
     console.table(data);
     startPrompt();
   });
 };
 
-const accessEmployees = () => {
-  connectDB.query( `SELECT employees.employee_id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(managers.first_name, " ", managers.last_name) AS manager
-  FROM roles
-  INNER JOIN employees
-  ON roles.role_id = employees.role_id
-  INNER JOIN departments
-  ON roles.dept_id = departments.dept_id
-  LEFT JOIN employees managers
-  ON managers.employee_id = employees.manager_id
-  ORDER BY employee_id;`,
-  (err, data) => {
-    if (err) throw err;
-    console.table(data);
-    startPrompt();
-  }
-  );
-}
-
-
 const exitPrompt = () => {
-  connectDB.end;
-  process.exit;
+  connectDB.end();
+  process.exit();
 };
