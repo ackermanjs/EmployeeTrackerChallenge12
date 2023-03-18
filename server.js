@@ -69,10 +69,10 @@ const accessDepartments = () => {
 
 const accessRoles = () => {
   connectDB.query(
-    `SELECT role.role_id, roles.title, department.name AS department, role.salary 
+  `SELECT role.id, role.title, department.name AS department, role.salary 
   FROM role 
   INNER JOIN department 
-  ON role.dept_id = department.dept_id;`,
+  ON role.department_id = department.id;`,
     (err, data) => {
       if (err) throw err;
       console.table(data);
@@ -82,7 +82,7 @@ const accessRoles = () => {
 };
 
 const accessEmployees = () => {
-  const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department_name, CONCAT(managers.first_name, " ", managers.last_name) AS manager
+  const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(managers.first_name, " ", managers.last_name) AS manager
   FROM employee
   INNER JOIN role
   ON role.id = employee.role_id
