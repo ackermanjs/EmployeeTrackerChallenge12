@@ -74,7 +74,6 @@ startPrompt = () => {
 const accessDepartments = () => {
   connectDB.query(`SELECT * FROM department;`, (err, data) => {
     if (err) throw err;
-    console.log(data);
     console.table(data);
     startPrompt();
   });
